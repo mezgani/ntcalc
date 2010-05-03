@@ -1,0 +1,13 @@
+__software__= "netcalc"  
+__author__ = "MEZGANI Ali mezgani@nativelabs.org"
+__version__ = "0.1"                                                                                                                                               
+__date__ = "2010/04/01 23:46:07"       
+__license__="GPLv3"
+__credits__ = "Thanks mam for support"                                                                                                                                             
+
+netcalc is a program that provide ip address and network calculations, it support actually only IPv4.
+netcalc is Free Software you can redistribute it and/or modify it under the terms of the GNU
+General Public License as published by the Free Software Foundation; either version 3 of the License, 
+or (at your option) any later version.See the GNU General Public License for more details.                                                                    
+
+I use ipcalc for years even netcalc is coded only for fun and to deep knowledge of network calculation.
