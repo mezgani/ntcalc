@@ -9,10 +9,10 @@ RM      := rm
 LD	:= ld
 
 static:
-	$(CC)  $(CFLAGS) -o ntcalc main.c
+	$(CC)  $(CFLAGS) -o ntcalc main.c ntcalc.c
 
 shared:
-	$(CC) -fPIC -Wall -g -c inetcalc.c	
+	$(CC) -fPIC -Wall -g -c ntcalc.c	
 	$(LD) -shared -soname libntcalc.so.1 -o libntcalc.so.1.0 *.o
 
 lib:	shared
