@@ -28,7 +28,7 @@ mask(int prefix) {
 uint32_t 
 netmask(int prefix)
 {
-  return htonl(0x00 - (1<<(32 - prefix - 1)));
+  return htonl(0x00 - (1<<(32 - prefix)));
 }
 
 /* returns the default wildcard associated with specifed prefix
