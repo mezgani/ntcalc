@@ -1,16 +1,21 @@
+#include <regex.h>
 #include "ntcalc.h"
+
+#define IPEXPR  "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})"
+#define CIDR  "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})/([0-9]{1,2})"
+#define PREFIX  "([0-9]{1,2})"
 
 static 
 void usage(FILE *out, char *program)
 {
   fprintf(out, "\033[0;31m\nntcalc (network calculator) takes an IPv4 address and a prefix and calculates\n\
 the resulting broadcast, network, Cisco wildcard mask, and host/net range.\n\n\033[0m");
-  fprintf(out, "\033[0;34mUsage:\t  \%s     address/prefix\n",program);
-  fprintf(out, "Example:  %s     192.168.1.2/24\n\n\033[0m", program);
-
-
+  fprintf(out, "\033[0;34m   Usage:    \%s      address / prefix\n\n",program);
+  fprintf(out, "1. Example:  %s     192.168.1.2/24\n\033[0m", program);
+  fprintf(out, "\033[0;34m2. Example:  %s     192.168.1.2 255.255.255.0\n\n\033[0m", program);
   
 }
+
 
 
 static 
@@ -25,53 +30,100 @@ void die (char *msg)
 }
 
 
-
-int main(int argc, char **argv)
+int 
+main(int argc, char **argv)
 {
-
-  char *address, *pre;
+  
+  char *address, *pre, *mask, *p;
   //data_t *ptr=NULL,**node;
   uint32_t a,b,c,d,e,f;
+  regex_t pr, re, cr;
+ 
   unsigned long value;
-  int prefix;
-
   int var1 = 0, var2 = 0;
   int var3 = 0, var4 = 0;
-  int var5 = 0;
+  int var5 = 0, prefix;
 
-  if (argc != 2)
+  if ((argc != 2) && (argc != 3))
     {
       usage(stderr, argv[0]);
       exit(0);
+      
+    }
 
+  if(regcomp(&pr, PREFIX, REG_EXTENDED) != 0) {
+    die("Error: compiling regular expression\n");
+  }
+
+  if(regcomp(&cr, CIDR, REG_EXTENDED) != 0) {
+    die("Error: compiling regular expression\n");
+  }
+  
+
+
+  if (argc == 3)
+    {
+
+      address = argv[1];
+      mask    = argv[2];
+
+      /* compile regular expression */
+
+      if(regcomp(&re, IPEXPR, REG_EXTENDED) != 0) {
+	die("Error: compiling regular expression\n");
+      }
+      if(regexec(&re, address, 0, NULL, 0) != 0) {
+	die("Error: Not an IPv4 dotted quad IP address\n");
+      }
+
+      if(regexec(&re, mask, 0, NULL, 0) != 0) {
+	die("Error: Not an IPv4 dotted quad mask adress\n");
+      }
+
+      address = argv[1];
+      mask    = argv[2];
+      prefix=maskpref(string2int(mask));
+      
     }
   
-  sscanf(argv[1], "%i.%i.%i.%i/%i", &var1, &var2, &var3, &var4, &var5);
-  if ((var1>255) || (var2>255) || (var3>255) || (var4>255) || (var5>32)){
-    die("Not an IPv4 dotted quad or CIDR notation\n");
-  }
-    
   
-  if (strchr(argv[1], '/')==NULL) {
-    die("Not an IPv4 dotted quad or CIDR notation\n");
-  }
+  if (argc == 2)
+    {  
 
+      if(regexec(&cr, argv[1], 0, NULL, 0) != 0) {
+	die("Error: Not an IPv4 dotted quad mask adress\n");
+      }
 
-  address=strtok(argv[1], "/");
-  pre =strtok(NULL, "/");
-  prefix=atoi(pre);
+      sscanf(argv[1], "%i.%i.%i.%i/%i", &var1, &var2, &var3, &var4, &var5);
+      if ((var1>255) || (var2>255) || (var3>255) || (var4>255) || (var5>32)){
+	die("Not an IPv4 dotted quad or CIDR notation\n");
+      }
+      
+      if (strchr(argv[1], '/')==NULL) {
+	die("Not an IPv4 dotted quad or CIDR notation\n");
+      }
 
+     
+      address=strtok(argv[1], "/");
+      pre = strtok (NULL, "/");
+
+      if(regexec(&pr, pre, 0, NULL, 0) != 0) {
+	die("Error: Not a valid prefix");
+      }
+      
+      prefix=atoi(pre);
+    }
   
   value = string2int(address);
-
+  
   a=netmask(prefix);
   b=broadcast(value, prefix);
   c=network(value, prefix);
   d=wildcard(prefix);
   e=hostmin(value, prefix);
   f=hostmax(value, prefix);
-
-
+  
+  
   // I like output color :)
 
   printf("\033[0;34m[+]\033[0m");
@@ -83,7 +135,7 @@ int main(int argc, char **argv)
   printf("\033[0;34m[+]\033[0m");
   printf("\033[0;32m Wildcard     :\033[0m \033[0;35m%s\033[0m\n", int2string(d));
   printf("\033[0;34m[+]\033[0m");
-  printf("\033[0;32m Network      :\033[0m \033[0;35m%s/%s\033[0m\n", int2string(c),pre);
+  printf("\033[0;32m Network      :\033[0m \033[0;35m%s/%d\033[0m\n", int2string(c),prefix);
   printf("\033[0;34m[+]\033[0m");
   printf("\033[0;32m Hostmin      :\033[0m \033[0;35m%s\033[0m\n", int2string(e));
   printf("\033[0;34m[+]\033[0m");

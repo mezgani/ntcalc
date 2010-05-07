@@ -13,7 +13,28 @@ nethost(int prefix){
   return ((1 << (32 - prefix)) - 2);
 }
 
-/* creates a netmask from a specified number of bits */
+
+/*
+ * returns prefix of a specific netmask 
+ */
+
+int 
+maskpref(uint32_t ntmask){
+  
+  int i = 0, prefix = 32;
+  while ( i < 32) {
+    if (!(ntohl(ntmask) & ((2 << i) - 1)))
+      prefix--;
+    i++;
+  }
+  return prefix;
+}
+
+
+
+/*
+ * creates a netmask from a specified number of bits 
+ */
 
 uint32_t 
 mask(int prefix) {
@@ -144,9 +165,9 @@ display(data_t *current) {
     }
   do
     {
-      printf("[%3d]: %15s\n", current->counter, 
+     printf("[%3d]: %15s\n", current->counter, 
 	     int2string(current->address));   
-
+       
       current = current->next;
     }
   while (current);
@@ -158,12 +179,12 @@ display(data_t *current) {
  */
 
 data_t *
-gggethosts(data_t *head, uint32_t addr, int prefix){
+ggethosts(data_t *head, uint32_t addr, int prefix){
 
   data_t *first=NULL, *node=NULL;
   int i;
   
-  if (head==NULL){
+  //if (head==NULL){
     for (i=1; i<nethost(prefix)+ 1; i++){
       node = (data_t *)malloc(sizeof(data_t));
       if (i==1) {
@@ -172,15 +193,8 @@ gggethosts(data_t *head, uint32_t addr, int prefix){
       node->address=((addr  & mask(prefix) )| htonl(i));
       node->counter = i;
       node->next  = head;
+      printf("[%d]: [%p] %s\n", node->counter, node, int2string(node->address));
     }
-    for (i=1; i<nethost(prefix)+ 1; i++){
-      node = (data_t *)malloc(sizeof(data_t));
-      node->address=((addr  & mask(prefix) )| htonl(i));
-      node->counter = i;
-      node->next = NULL;
-      
-    }
-  }
+
   return first;
 }
-

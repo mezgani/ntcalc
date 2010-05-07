@@ -37,7 +37,8 @@ struct data {
 typedef struct data data_t;
 
 
-int  nethost(int prefix);
+int nethost(int prefix);
+int maskpref(uint32_t mask);
 uint32_t  mask(int prefix);
 uint32_t  netmask(int prefix);
 uint32_t wildcard(int prefix);
@@ -49,6 +50,6 @@ char *int2string(uint32_t address);
 uint32_t string2int(char *address);
 data_t *gethosts(uint32_t addr, int prefix);
 void display(data_t *current);
-data_t *gggethosts(data_t *head, uint32_t addr, int prefix);
+data_t *ggethosts(data_t *head, uint32_t addr, int prefix);
 
 
