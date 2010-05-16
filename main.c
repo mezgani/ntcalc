@@ -161,12 +161,12 @@ main(int argc, char **argv)
   printf("\033[0;32m Hosts/Nets   :\033[0m \033[0;35m%d\033[0m\n", nethost(prefix));
 
 
-
+  /*
   ptr=gethosts(value, prefix);
   if (ptr==NULL)
     die("Emty data\n");
   display(ptr);
-  
+  */
 
   return 0;
 }
