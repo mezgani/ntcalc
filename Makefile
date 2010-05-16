@@ -7,6 +7,8 @@ CP      := cp
 LN      := ln
 RM      := rm
 LD	:= ld
+WHICH   := which
+DOXYGEN := doxygen
 
 static:
 	$(CC)  $(CFLAGS) -o ntcalc main.c ntcalc.c
@@ -25,7 +27,12 @@ all: shared lib
 install: all 
 	$(CP) ntcalc   /usr/local/bin/
 
+doc:
+	$(WHICH) doxygen > /dev/null  && $(DOXYGEN) ntcalc.cfg || echo "ntcalc: doxygen not present in your system"
+
 clean:
-	$(RM) ntcalc
-	$(RM) libntcalc.so.1.0 
-	$(RM) *.o
+	$(RM) -f ntcalc
+	$(RM) -f libntcalc.so.1.0 
+	$(RM) -f *.o
+	
+

@@ -1,9 +1,18 @@
 #include <regex.h>
 #include "ntcalc.h"
 
+
+
+
+
+
 #define IPEXPR  "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})"
 #define CIDR  "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})/([0-9]{1,2})"
 #define PREFIX  "([0-9]{1,2})"
+
+
+
+
 
 static 
 void usage(FILE *out, char *program)
@@ -34,8 +43,8 @@ int
 main(int argc, char **argv)
 {
   
-  char *address, *pre, *mask, *p;
-  //data_t *ptr=NULL,**node;
+  char *address=NULL, *pre, *mask=NULL;
+  data_t *ptr=NULL;
   uint32_t a,b,c,d,e,f;
   regex_t pr, re, cr;
  
@@ -63,25 +72,33 @@ main(int argc, char **argv)
 
   if (argc == 3)
     {
-
-      address = argv[1];
-      mask    = argv[2];
-
       /* compile regular expression */
 
       if(regcomp(&re, IPEXPR, REG_EXTENDED) != 0) {
 	die("Error: compiling regular expression\n");
       }
-      if(regexec(&re, address, 0, NULL, 0) != 0) {
+      if(regexec(&re, argv[1], 0, NULL, 0) != 0) {
 	die("Error: Not an IPv4 dotted quad IP address\n");
       }
 
-      if(regexec(&re, mask, 0, NULL, 0) != 0) {
+      if(regexec(&re, argv[2], 0, NULL, 0) != 0) {
 	die("Error: Not an IPv4 dotted quad mask adress\n");
       }
 
-      address = argv[1];
-      mask    = argv[2];
+      sscanf(argv[1], "%i.%i.%i.%i", &var1, &var2, &var3, &var4);
+      if ((var1>255) || (var2>255) || (var3>255) || (var4>255)){
+	die("Not an IPv4 dotted quad or CIDR notation\n");
+      }
+
+      sprintf(address, "%i.%i.%i.%i", var1, var2, var3, var4);
+      
+      sscanf(argv[2], "%i.%i.%i.%i", &var1, &var2, &var3, &var4);
+      if ((var1>255) || (var2>255) || (var3>255) || (var4>255)){
+	die("Not an IPv4 dotted quad or CIDR notation\n");
+      }
+
+      sprintf(mask, "%i.%i.%i.%i", var1, var2, var3, var4);
+
       prefix=maskpref(string2int(mask));
       
     }
@@ -131,8 +148,6 @@ main(int argc, char **argv)
   printf("\033[0;34m[+]\033[0m");
   printf("\033[0;32m Netmask      :\033[0m \033[0;35m%s\033[0m\n", int2string(a));
   printf("\033[0;34m[+]\033[0m");
-  printf("\033[0;32m Broadcast    :\033[0m \033[0;35m%s\033[0m\n", int2string(b));
-  printf("\033[0;34m[+]\033[0m");
   printf("\033[0;32m Wildcard     :\033[0m \033[0;35m%s\033[0m\n", int2string(d));
   printf("\033[0;34m[+]\033[0m");
   printf("\033[0;32m Network      :\033[0m \033[0;35m%s/%d\033[0m\n", int2string(c),prefix);
@@ -141,19 +156,17 @@ main(int argc, char **argv)
   printf("\033[0;34m[+]\033[0m");
   printf("\033[0;32m Hostmax      :\033[0m \033[0;35m%s\033[0m\n", int2string(f));
   printf("\033[0;34m[+]\033[0m");
+  printf("\033[0;32m Broadcast    :\033[0m \033[0;35m%s\033[0m\n", int2string(b));
+  printf("\033[0;34m[+]\033[0m");
   printf("\033[0;32m Hosts/Nets   :\033[0m \033[0;35m%d\033[0m\n", nethost(prefix));
 
 
 
-/*
-  ptr=ggethosts(NULL,value, prefix);
-
+  ptr=gethosts(value, prefix);
   if (ptr==NULL)
     die("Emty data\n");
-   
+  display(ptr);
   
-   display(ptr);
-  */
 
   return 0;
 }
