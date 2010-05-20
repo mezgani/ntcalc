@@ -6,7 +6,9 @@ __license__="GPLv3"
 __credits__ = "Thanks mam for support"                                                                                                                                             
 
 ntcalc is a program that provide ip address and network calculations, it support actually only IPv4.
-ntcalc contains a c library that provide IPv4 and network calculation.
+ntcalc contains provide a c library that make easy suchnetwork calculation tasks.
+For more information : http://ntcalc.sourceforge.net/
+
 
 ntcalc is Free Software you can redistribute it and/or modify it under the terms of the GNU
 General Public License as published by the Free Software Foundation; either version 3 of the License, 
