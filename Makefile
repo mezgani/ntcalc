@@ -19,6 +19,7 @@ shared:
 
 lib:	shared
 	$(CP) libntcalc.so.1.0 /usr/lib/
+	$(CP) ntcalc.h /usr/include/
 	$(LN) -sf /usr/lib/libntcalc.so.1.0 /usr/lib/libntcalc.so
 	$(CC) -o  ntcalc -Wall main.c -L/usr/lib -lntcalc
 
