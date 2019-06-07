@@ -1,0 +1,10 @@
+digraph "/home/mezgani/github.com/ntcalc/ntcalc.h"
+{
+  edge [fontname="FreeSans",fontsize="10",labelfontname="FreeSans",labelfontsize="10"];
+  node [fontname="FreeSans",fontsize="10",shape=record];
+  Node9 [label="/home/mezgani/github.com\l/ntcalc/ntcalc.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node9 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node10 [label="/home/mezgani/github.com\l/ntcalc/main.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$main_8c.html"];
+  Node9 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="FreeSans"];
+  Node11 [label="/home/mezgani/github.com\l/ntcalc/ntcalc.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$ntcalc_8c.html"];
+}
